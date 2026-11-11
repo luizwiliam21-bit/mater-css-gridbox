@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panduan & Cheatsheet Interaktif Vanilla CSS Grid</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            gridbrand: {
+              50: '#ecfeff',
+              100: '#cffafe',
+              400: '#22d3ee',
+              500: '#06b6d4',
+              600: '#0891b2',
+              700: '#0e7490',
+              900: '#164e63',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Styling dasar kanvas visual grid */
+    .grid-demo-canvas {
+      background-color: #f8fafc;
+      background-image: 
+        linear-gradient(to right, rgba(148, 163, 184, 0.25) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.25) 1px, transparent 1px);
+      background-size: 20px 20px;
+      border: 2px dashed #94a3b8;
+      transition: all 0.25s ease;
+      min-height: 320px;
+    }
+
+    /* Grid Items card transition */
+    .grid-demo-item {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Track overlay lines styling */
+    .show-grid-lines .grid-demo-item {
+      outline: 2px solid #f43f5e;
+      outline-offset: -2px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
+
+  <!-- Header Navigasi -->
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <span class="w-8 h-8 rounded-lg bg-cyan-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">G</span>
+        <div>
+          <h1 class="font-extrabold text-slate-900 leading-none text-lg">CSS Grid Visual Master</h1>
+          <p class="text-xs text-slate-500 font-medium">Vanilla CSS 2D Interactive Cheatsheet</p>
+        </div>
+      </div>
+      <nav class="hidden md:flex space-x-6 text-sm font-semibold text-slate-600">
+        <a href="#anatomy" class="hover:text-cyan-600 transition-colors">Anatomi Grid</a>
+        <a href="#interactive-playground" class="hover:text-cyan-600 transition-colors">Playground Kontainer</a>
+        <a href="#item-properties" class="hover:text-cyan-600 transition-colors">Properti Item</a>
+        <a href="#real-world-patterns" class="hover:text-cyan-600 transition-colors">Pola Desain Nyata</a>
+      </nav>
+      <a href="#interactive-playground" class="bg-cyan-600 hover:bg-cyan-700 text-white text-xs sm:text-sm font-medium py-2 px-3.5 rounded-lg shadow-sm transition">
+        Coba Playground
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-6">
+    <div class="bg-gradient-to-r from-cyan-800 via-sky-800 to-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
+      <div class="max-w-2xl relative z-10">
+        <span class="inline-block px-3 py-1 bg-cyan-500/30 border border-cyan-400/30 rounded-full text-xs font-semibold uppercase tracking-wider text-cyan-200 mb-3">
+          Tata Letak 2 Dimensi Lengkap
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">
+          Kuasai Tata Letak CSS Grid
+        </h2>
+        <p class="text-cyan-100 text-sm sm:text-base leading-relaxed">
+          Berbeda dengan Flexbox yang bekerja pada 1 dimensi (sebaris <em>atau</em> sekolom), CSS Grid mengontrol <strong>baris dan kolom secara bersamaan</strong> untuk menciptakan struktur halaman yang kokoh dan presisi.
+        </p>
+      </div>
+      <!-- Background Visual Grid Art -->
+      <div class="absolute -right-10 -bottom-10 opacity-15 hidden md:grid grid-cols-4 gap-2 w-72 h-72 pointer-events-none">
+        <div class="border-2 border-white rounded-lg"></div>
+        <div class="border-2 border-white rounded-lg col-span-2"></div>
+        <div class="border-2 border-white rounded-lg"></div>
+        <div class="border-2 border-white rounded-lg col-span-3"></div>
+        <div class="border-2 border-white rounded-lg"></div>
+        <div class="border-2 border-white rounded-lg col-span-2"></div>
+        <div class="border-2 border-white rounded-lg col-span-2"></div>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-14">
+
+    <!-- BAGIAN 1: ANATOMI & TERMINOLOGI GRID -->
+    <section id="anatomy" class="scroll-mt-20">
+      <div class="flex items-center space-x-3 mb-6">
+        <span class="px-2.5 py-1 text-xs font-bold rounded bg-cyan-100 text-cyan-800">Bagian 1</span>
+        <h3 class="text-2xl font-bold text-slate-900">Anatomi & Terminologi Inti CSS Grid</h3>
+      </div>
+      <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+        Pahami 4 konsep dasar ini sebelum mulai menulis kode grid:
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- 1. Grid Lines -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center font-bold mb-3 border border-cyan-100">1</div>
+            <h4 class="font-bold text-slate-800 text-base mb-1">Grid Lines</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              Garis pembatas horizontal & vertikal. Dihitung mulai dari <code class="font-mono bg-slate-100 px-1 py-0.5 rounded text-cyan-700">1</code> hingga <code class="font-mono bg-slate-100 px-1 py-0.5 rounded text-cyan-700">-1</code> (garis paling ujung).
+            </p>
+          </div>
+          <div class="mt-4 p-2 bg-slate-50 border border-slate-200 rounded-lg text-[10px] font-mono text-slate-600 text-center">
+            Kolom: 1 | 2 | 3 | 4
+          </div>
+        </div>
+
+        <!-- 2. Grid Tracks -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center font-bold mb-3 border border-cyan-100">2</div>
+            <h4 class="font-bold text-slate-800 text-base mb-1">Grid Track</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              Ruang di antara dua baris grid yang bersebelahan (berupa 1 kolom utuh atau 1 baris utuh).
+            </p>
+          </div>
+          <div class="mt-4 p-2 bg-slate-50 border border-slate-200 rounded-lg text-[10px] font-mono text-slate-600 text-center">
+            1 Track = 1 Row / 1 Column
+          </div>
+        </div>
+
+        <!-- 3. Grid Cell -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center font-bold mb-3 border border-cyan-100">3</div>
+            <h4 class="font-bold text-slate-800 text-base mb-1">Grid Cell</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              Unit terkecil dari grid; perpotongan tepat antara satu baris dan satu kolom (seperti 1 sel tabel).
+            </p>
+          </div>
+          <div class="mt-4 p-2 bg-slate-50 border border-slate-200 rounded-lg text-[10px] font-mono text-slate-600 text-center">
+            1 Kotak Sel Tunggal
+          </div>
+        </div>
+
+        <!-- 4. Grid Area -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-700 flex items-center justify-center font-bold mb-3 border border-cyan-100">4</div>
+            <h4 class="font-bold text-slate-800 text-base mb-1">Grid Area</h4>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              Area persegi panjang yang terdiri dari satu atau gabungan beberapa Grid Cell (contoh: Header, Sidebar).
+            </p>
+          </div>
+          <div class="mt-4 p-2 bg-slate-50 border border-slate-200 rounded-lg text-[10px] font-mono text-slate-600 text-center">
+            Gabungan Multi-Cell Persegi
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAGIAN 2: PLAYGROUND INTERAKTIF CONTAINER -->
+    <section id="interactive-playground" class="scroll-mt-20">
+      <div class="flex items-center space-x-3 mb-4">
+        <span class="px-2.5 py-1 text-xs font-bold rounded bg-cyan-100 text-cyan-800">Bagian 2</span>
+        <h3 class="text-2xl font-bold text-slate-900">Playground Interaktif Grid Container</h3>
+      </div>
+      <p class="text-slate-600 text-sm mb-6">Ubah properti container di bawah untuk mengamati perubahan layout secara realtime.</p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 bg-white p-6 rounded-3xl border border-slate-200 shadow-md">
+        
+        <!-- Controls Column -->
+        <div class="lg:col-span-4 space-y-4 pr-0 lg:pr-2 border-b lg:border-b-0 lg:border-r border-slate-200 pb-6 lg:pb-0">
+          <div class="flex justify-between items-center">
+            <h4 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Kontrol Induk (Container)</h4>
+            <button id="resetGridBtn" class="text-xs text-cyan-600 hover:underline font-medium">Reset Default</button>
+          </div>
+
+          <!-- grid-template-columns -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">grid-template-columns</label>
+            <select id="ctrl-columns" class="w-full text-xs font-mono bg-slate-50 border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-cyan-500 outline-none">
+              <option value="repeat(3, 1fr)" selected>repeat(3, 1fr) - 3 Kolom Rata</option>
+              <option value="1fr 2fr 1fr">1fr 2fr 1fr - Kolom Tengah Lebar 2x</option>
+              <option value="200px 1fr">200px 1fr - Sidebar Tetap + Sisa Ruang</option>
+              <option value="repeat(4, 1fr)">repeat(4, 1fr) - 4 Kolom</option>
+              <option value="repeat(auto-fit, minmax(110px, 1fr))">repeat(auto-fit, minmax(110px, 1fr)) - Responsif</option>
+            </select>
+          </div>
+
+          <!-- grid-template-rows -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">grid-template-rows</label>
+            <select id="ctrl-rows" class="w-full text-xs font-mono bg-slate-50 border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-cyan-500 outline-none">
+              <option value="repeat(2, 90px)" selected>repeat(2, 90px) - Tinggi Baris Tetap</option>
+              <option value="auto auto">auto auto - Mengikuti Konten</option>
+              <option value="80px 140px">80px 140px - Baris Pertama & Kedua Beda</option>
+            </select>
+          </div>
+
+          <!-- gap -->
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label class="text-xs font-bold text-slate-700">gap: <span id="gap-val" class="font-mono text-cyan-600">12px</span></label>
+            </div>
+            <input id="ctrl-gap" type="range" min="0" max="36" value="12" class="w-full accent-cyan-600">
+          </div>
+
+          <!-- justify-items -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">justify-items (Horizontal di Tiap Sel)</label>
+            <select id="ctrl-justify-items" class="w-full text-xs font-mono bg-slate-50 border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-cyan-500 outline-none">
+              <option value="stretch" selected>stretch (default - isi lebar sel)</option>
+              <option value="start">start (rata kiri)</option>
+              <option value="center">center (rata tengah)</option>
+              <option value="end">end (rata kanan)</option>
+            </select>
+          </div>
+
+          <!-- align-items -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">align-items (Vertikal di Tiap Sel)</label>
+            <select id="ctrl-align-items" class="w-full text-xs font-mono bg-slate-50 border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-cyan-500 outline-none">
+              <option value="stretch" selected>stretch (default - isi tinggi sel)</option>
+              <option value="start">start (rata atas)</option>
+              <option value="center">center (rata tengah)</option>
+              <option value="end">end (rata bawah)</option>
+            </select>
+          </div>
+
+          <!-- Fitur Garis Bantu -->
+          <div class="pt-2 flex items-center justify-between border-t border-slate-100">
+            <span class="text-xs font-bold text-slate-700">Tampilkan Garis Sel</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="toggleGridOutline" class="sr-only peer">
+              <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-cyan-600"></div>
+            </label>
+          </div>
+
+          <!-- Tambah / Kurang Item -->
+          <div class="pt-2 flex gap-2">
+            <button id="addGridItem" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-1.5 rounded-lg text-xs transition">+ Tambah Item</button>
+            <button id="removeGridItem" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-1.5 rounded-lg text-xs transition">- Kurang Item</button>
+          </div>
+        </div>
+
+        <!-- Visual Display Column -->
+        <div class="lg:col-span-8 flex flex-col justify-between space-y-4">
+          <!-- Canvas Box -->
+          <div class="relative">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-xs font-semibold text-slate-500">Live Preview Grid Container:</span>
+              <span class="text-[11px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded font-mono">display: grid</span>
+            </div>
+
+            <!-- The Grid Box -->
+            <div id="interactiveGridBox" class="grid-demo-canvas w-full rounded-2xl p-4 overflow-auto" style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 90px); gap: 12px; justify-items: stretch; align-items: stretch;">
+              <div class="grid-demo-item bg-cyan-600 text-white rounded-xl p-3 flex flex-col items-center justify-center font-bold text-sm min-w-[50px] min-h-[50px]">
+                <span>1</span>
+              </div>
+              <div class="grid-demo-item bg-cyan-500 text-white rounded-xl p-3 flex flex-col items-center justify-center font-bold text-sm min-w-[50px] min-h-[50px]">
+                <span>2</span>
+              </div>
+              <div class="grid-demo-item bg-sky-600 text-white rounded-xl p-3 flex flex-col items-center justify-center font-bold text-sm min-w-[50px] min-h-[50px]">
+                <span>3</span>
+              </div>
+              <div class="grid-demo-item bg-indigo-600 text-white rounded-xl p-3 flex flex-col items-center justify-center font-bold text-sm min-w-[50px] min-h-[50px]">
+                <span>4</span>
+              </div>
+              <div class="grid-demo-item bg-indigo-500 text-white rounded-xl p-3 flex flex-col items-center justify-center font-bold text-sm min-w-[50px] min-h-[50px]">
+                <span>5</span>
+              </div>
+              <div class="grid-demo-item bg-violet-600 text-white rounded-xl p-3 flex flex-col items-center justify-center font-bold text-sm min-w-[50px] min-h-[50px]">
+                <span>6</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Generated CSS Code Block -->
+          <div class="bg-slate-900 rounded-2xl p-4 text-slate-200 font-mono text-xs shadow-inner">
+            <div class="flex justify-between items-center text-slate-400 mb-2 border-b border-slate-800 pb-2">
+              <span>CSS Dihasilkan:</span>
+              <button id="copyGridCss" class="hover:text-white transition text-[11px] bg-slate-800 px-2 py-1 rounded">Salin CSS</button>
+            </div>
+            <pre id="gridGeneratedCss" class="text-cyan-300 leading-relaxed overflow-x-auto">.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 90px);
+  gap: 12px;
+  justify-items: stretch;
+  align-items: stretch;
+}</pre>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BAGIAN 3: PROPERTI ANAK (GRID ITEMS) -->
+    <section id="item-properties" class="scroll-mt-20">
+      <div class="flex items-center space-x-3 mb-6">
+        <span class="px-2.5 py-1 text-xs font-bold rounded bg-cyan-100 text-cyan-800">Bagian 3</span>
+        <h3 class="text-2xl font-bold text-slate-900">Properti untuk Elemen Anak (Grid Items)</h3>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- 1. Span & Grid Lines Positioning -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div class="border-b border-slate-100 pb-3">
+            <h4 class="text-lg font-bold text-slate-900">1. grid-column & grid-row (Spanning)</h4>
+            <p class="text-xs text-slate-500">Membentang sel melintasi baris dan kolom berdasarkan nomor grid lines.</p>
+          </div>
+
+          <div class="space-y-4 text-xs">
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+              <span class="font-mono font-bold text-cyan-700 block mb-1">grid-column: 1 / 3; (atau 1 / span 2)</span>
+              <p class="text-slate-600 mb-2">Item membentang selebar 2 kolom (mulai garis kolom 1 hingga garis 3).</p>
+            </div>
+
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+              <span class="font-mono font-bold text-cyan-700 block mb-1">grid-column: 1 / -1;</span>
+              <p class="text-slate-600 mb-2">Item otomatis mengambil lebar penuh dari garis paling kiri sampai garis paling kanan.</p>
+            </div>
+
+            <!-- Mini Visual Demo Item Spanning -->
+            <div class="grid grid-cols-3 gap-2 bg-slate-100 p-3 rounded-xl font-mono text-[11px] text-white text-center font-semibold">
+              <div class="col-span-2 bg-cyan-600 p-2.5 rounded-lg">grid-column: span 2</div>
+              <div class="bg-slate-400 p-2.5 rounded-lg">Normal</div>
+              <div class="bg-slate-400 p-2.5 rounded-lg">Normal</div>
+              <div class="col-span-2 bg-indigo-600 p-2.5 rounded-lg">grid-column: span 2</div>
+              <div class="col-span-3 bg-emerald-600 p-2.5 rounded-lg">grid-column: 1 / -1 (Penuh)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Self Alignment -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div class="border-b border-slate-100 pb-3">
+            <h4 class="text-lg font-bold text-slate-900">2. justify-self & align-self (Self Alignment)</h4>
+            <p class="text-xs text-slate-500">Menimpa perataan container khusus untuk satu elemen item saja.</p>
+          </div>
+
+          <div class="space-y-4 text-xs">
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+              <span class="font-mono font-bold text-cyan-700 block mb-1">place-self: [align-self] [justify-self];</span>
+              <p class="text-slate-600">Shorthand untuk mengatur posisi item tunggal secara vertikal dan horizontal sekaligus di dalam selnya.</p>
+            </div>
+
+            <!-- Mini Visual Demo Self Alignment -->
+            <div class="grid grid-cols-2 gap-3 bg-slate-100 p-3 rounded-xl h-44">
+              <!-- Item 1: Center/Center -->
+              <div class="border border-dashed border-slate-300 rounded-lg p-2 flex items-center justify-center">
+                <div class="bg-cyan-600 text-white font-mono text-[10px] p-2 rounded-md font-bold">
+                  place-self: center
+                </div>
+              </div>
+              <!-- Item 2: End/End -->
+              <div class="border border-dashed border-slate-300 rounded-lg p-2 flex items-end justify-end">
+                <div class="bg-purple-600 text-white font-mono text-[10px] p-2 rounded-md font-bold">
+                  justify: end | align: end
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BAGIAN 4: POLA DESAIN POPULER DUNIA NYATA -->
+    <section id="real-world-patterns" class="space-y-6 scroll-mt-20">
+      <div class="flex items-center space-x-3 mb-2">
+        <span class="px-2.5 py-1 text-xs font-bold rounded bg-cyan-100 text-cyan-800">Bagian 4</span>
+        <h3 class="text-2xl font-bold text-slate-900">Pola Kasus Populer CSS Grid</h3>
+      </div>
+      <p class="text-slate-600 text-sm">Tiga implementasi arsitektur Grid yang paling sering diaplikasikan dalam web modern:</p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Pattern 1: Holy Grail Layout (Template Areas) -->
+        <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm space-y-3 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="font-bold text-slate-900 text-sm">1. Holy Grail (Template Areas)</h4>
+              <span class="text-[10px] bg-cyan-100 text-cyan-800 px-2 py-0.5 rounded font-mono">Semantik</span>
+            </div>
+            <p class="text-xs text-slate-500 mb-3">Membuat skema denah layout lengkap berbasis nama string.</p>
+            
+            <div class="grid grid-cols-3 gap-1.5 h-36 bg-slate-100 p-2 rounded-xl text-white font-mono text-[10px] text-center font-bold">
+              <div class="col-span-3 bg-amber-500 rounded p-1.5 flex items-center justify-center">Header (header)</div>
+              <div class="bg-sky-600 rounded p-1.5 flex items-center justify-center">Sidebar</div>
+              <div class="col-span-2 bg-cyan-600 rounded p-1.5 flex items-center justify-center">Main Content</div>
+              <div class="col-span-3 bg-slate-600 rounded p-1.5 flex items-center justify-center">Footer (footer)</div>
+            </div>
+          </div>
+
+          <pre class="bg-slate-900 text-cyan-300 p-2.5 rounded-xl font-mono text-[10px] overflow-x-auto">grid-template-areas:
+  "header  header"
+  "sidebar main"
+  "footer  footer";</pre>
+        </div>
+
+        <!-- Pattern 2: Auto-Responsive RAM (Repeat, Auto, Minmax) -->
+        <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm space-y-3 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="font-bold text-slate-900 text-sm">2. Kartu Responsif Tanpa Media Query</h4>
+              <span class="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-mono">Auto-fit</span>
+            </div>
+            <p class="text-xs text-slate-500 mb-3">Kolom otomatis membagi diri mengikuti lebar layar.</p>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 bg-slate-100 p-2 rounded-xl h-36 overflow-hidden text-white font-mono text-[10px] font-bold text-center">
+              <div class="bg-emerald-600 rounded p-2 flex items-center justify-center">Card 1</div>
+              <div class="bg-emerald-600 rounded p-2 flex items-center justify-center">Card 2</div>
+              <div class="bg-emerald-600 rounded p-2 flex items-center justify-center">Card 3</div>
+              <div class="bg-emerald-600 rounded p-2 flex items-center justify-center">Card 4</div>
+            </div>
+          </div>
+
+          <pre class="bg-slate-900 text-emerald-300 p-2.5 rounded-xl font-mono text-[10px] overflow-x-auto">grid-template-columns: 
+  repeat(auto-fit, minmax(140px, 1fr));</pre>
+        </div>
+
+        <!-- Pattern 3: Modern Bento Grid -->
+        <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm space-y-3 flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <h4 class="font-bold text-slate-900 text-sm">3. Bento Grid Showcase</h4>
+              <span class="text-[10px] bg-violet-100 text-violet-800 px-2 py-0.5 rounded font-mono">Asimetris</span>
+            </div>
+            <p class="text-xs text-slate-500 mb-3">Tata letak tren kartu modern bergaya bento box dashboard.</p>
+            
+            <div class="grid grid-cols-3 grid-rows-2 gap-1.5 h-36 bg-slate-100 p-2 rounded-xl text-white font-mono text-[10px] font-bold text-center">
+              <div class="col-span-2 bg-indigo-600 rounded p-2 flex items-center justify-center">Fitur Utama</div>
+              <div class="row-span-2 bg-violet-600 rounded p-2 flex items-center justify-center">Statistik Vertikal</div>
+              <div class="bg-purple-600 rounded p-2 flex items-center justify-center">Widget A</div>
+              <div class="bg-cyan-600 rounded p-2 flex items-center justify-center">Widget B</div>
+            </div>
+          </div>
+
+          <pre class="bg-slate-900 text-violet-300 p-2.5 rounded-xl font-mono text-[10px] overflow-x-auto">/* Kombinasi col-span & row-span */
+.item-a { grid-column: span 2; }
+.item-b { grid-row: span 2; }</pre>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-6 mt-16 text-center text-xs text-slate-500">
+    <p>Dibuat untuk memudahkan visualisasi dan penguasaan Vanilla CSS Grid secara komprehensif.</p>
+  </footer>
+
+  <!-- Script Logika Interaktif Playground -->
+  <script>
+    const gridBox = document.getElementById('interactiveGridBox');
+    const selectCols = document.getElementById('ctrl-columns');
+    const selectRows = document.getElementById('ctrl-rows');
+    const sliderGap = document.getElementById('ctrl-gap');
+    const gapValLabel = document.getElementById('gap-val');
+    const selectJustifyItems = document.getElementById('ctrl-justify-items');
+    const selectAlignItems = document.getElementById('ctrl-align-items');
+    const toggleLines = document.getElementById('toggleGridOutline');
+    const gridCssOutput = document.getElementById('gridGeneratedCss');
+    const resetBtn = document.getElementById('resetGridBtn');
+    const addBtn = document.getElementById('addGridItem');
+    const removeBtn = document.getElementById('removeGridItem');
+    const copyBtn = document.getElementById('copyGridCss');
+
+    let totalItems = 6;
+
+    function refreshGridStyles() {
+      const cols = selectCols.value;
+      const rows = selectRows.value;
+      const gp = sliderGap.value + 'px';
+      const jItems = selectJustifyItems.value;
+      const aItems = selectAlignItems.value;
+
+      gapValLabel.textContent = gp;
+
+      // Update grid box inline styles
+      gridBox.style.gridTemplateColumns = cols;
+      gridBox.style.gridTemplateRows = rows;
+      gridBox.style.gap = gp;
+      gridBox.style.justifyItems = jItems;
+      gridBox.style.alignItems = aItems;
+
+      // Update generated CSS output
+      gridCssOutput.textContent = `.grid-container {
+  display: grid;
+  grid-template-columns: ${cols};
+  grid-template-rows: ${rows};
+  gap: ${gp};
+  justify-items: ${jItems};
+  align-items: ${aItems};
+}`;
+    }
+
+    // Pasang listeners
+    [selectCols, selectRows, selectJustifyItems, selectAlignItems].forEach(select => {
+      select.addEventListener('change', refreshGridStyles);
+    });
+
+    sliderGap.addEventListener('input', refreshGridStyles);
+
+    // Toggle border outline
+    toggleLines.addEventListener('change', () => {
+      gridBox.classList.toggle('show-grid-lines', toggleLines.checked);
+    });
+
+    // Tambah & Kurang Item
+    addBtn.addEventListener('click', () => {
+      totalItems++;
+      const newItem = document.createElement('div');
+      const colors = ['bg-cyan-600', 'bg-cyan-500', 'bg-sky-600', 'bg-indigo-600', 'bg-indigo-500', 'bg-violet-600', 'bg-pink-600', 'bg-emerald-600'];
+      const pickColor = colors[totalItems % colors.length];
+      newItem.className = `grid-demo-item ${pickColor} text-white rounded-xl p-3 flex flex-col items-center justify-center font-bold text-sm min-w-[50px] min-h-[50px]`;
+      newItem.innerHTML = `<span>${totalItems}</span>`;
+      gridBox.appendChild(newItem);
+    });
+
+    removeBtn.addEventListener('click', () => {
+      if (gridBox.children.length > 1) {
+        gridBox.removeChild(gridBox.lastElementChild);
+        totalItems--;
+      }
+    });
+
+    // Reset Defaults
+    resetBtn.addEventListener('click', () => {
+      selectCols.value = 'repeat(3, 1fr)';
+      selectRows.value = 'repeat(2, 90px)';
+      sliderGap.value = '12';
+      selectJustifyItems.value = 'stretch';
+      selectAlignItems.value = 'stretch';
+      toggleLines.checked = false;
+      gridBox.classList.remove('show-grid-lines');
+      refreshGridStyles();
+    });
+
+    // Salin kode CSS
+    copyBtn.addEventListener('click', () => {
+      const codeToCopy = gridCssOutput.textContent;
+      const tempArea = document.createElement('textarea');
+      tempArea.value = codeToCopy;
+      document.body.appendChild(tempArea);
+      tempArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempArea);
+
+      const prevLabel = copyBtn.textContent;
+      copyBtn.textContent = 'Tersalin!';
+      copyBtn.classList.add('text-cyan-400');
+      setTimeout(() => {
+        copyBtn.textContent = prevLabel;
+        copyBtn.classList.remove('text-cyan-400');
+      }, 1500);
+    });
+
+    // Inisialisasi awal
+    refreshGridStyles();
+  </script>
+</body>
+</html>
